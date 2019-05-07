@@ -67,5 +67,8 @@ namespace Nethermind.JsonRpc.Modules.Eth
         ResultWrapper<IEnumerable<byte[]>> eth_getWork();
         ResultWrapper<bool?> eth_submitWork(byte[] nonce, Keccak headerPowHash, byte[] mixDigest);
         ResultWrapper<bool?> eth_submitHashrate(string hashRate, string id);
+        
+        // https://github.com/ethereum/EIPs/issues/1186
+        ResultWrapper<AccountProof> eth_getProof(Address accountAddress, Keccak[] hashRate, BlockParameter blockParameter);
     }
 }

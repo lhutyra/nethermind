@@ -236,6 +236,11 @@ namespace Nethermind.Facade
         public TxPoolInfo GetTxPoolInfo()
             => _transactionPoolInfoProvider.GetInfo(_txPool.GetPendingTransactions());
 
+        public void RunTreeVisitor(ITreeVisitor treeVisitor)
+        {
+            _stateReader.RunTreeVisitor(treeVisitor);
+        }
+
         public int NewFilter(FilterBlock fromBlock, FilterBlock toBlock,
             object address = null, IEnumerable<object> topics = null)
         {

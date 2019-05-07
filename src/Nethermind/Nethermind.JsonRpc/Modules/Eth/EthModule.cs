@@ -34,6 +34,7 @@ using Nethermind.Core.Model;
 using Nethermind.Dirichlet.Numerics;
 using Nethermind.Facade;
 using Nethermind.JsonRpc.Data;
+using Nethermind.Store;
 using Newtonsoft.Json;
 
 namespace Nethermind.JsonRpc.Modules.Eth
@@ -774,6 +775,15 @@ namespace Nethermind.JsonRpc.Modules.Eth
         public ResultWrapper<bool?> eth_submitHashrate(string hashRate, string id)
         {
             return ResultWrapper<bool?>.Fail("eth_submitHashrate not supported", ErrorType.MethodNotFound, null);
+        }
+
+        // https://github.com/ethereum/EIPs/issues/1186
+        public ResultWrapper<AccountProof> eth_getProof(Address accountAddress, Keccak[] hashRate, BlockParameter blockParameter)
+        {
+            ProofCollector proofCollector = new ProofCollector(accountAddress);
+            _blockchainBridge.RunTreeVisitor(proofCollector);
+
+            return ResultWrapper<AccountProof>.Success(proofCollector.AccountProof);
         }
 
         private ResultWrapper<BigInteger?> GetOmmersCount(BlockParameter blockParameter)
