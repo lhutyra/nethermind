@@ -399,6 +399,9 @@ namespace Nethermind.Store
 
             if (NodeType == NodeType.Extension)
             {
+                context.Position = 0;
+                context.ReadSequenceLength();
+                context.DecodeByteArraySpan();
                 return context.DecodeKeccak();
             }
 
@@ -548,7 +551,8 @@ namespace Nethermind.Store
                     throw new NotImplementedException();
                 case NodeType.Branch:
                 {
-                    visitor.VisitBranch(Keccak?.Bytes ?? FullRlp?.Bytes, context);
+                    BuildLookupTable();
+                    visitor.VisitBranch(this, context);
                     context.Level++;
                     for (int i = 0; i < 16; i++)
                     {
@@ -566,7 +570,7 @@ namespace Nethermind.Store
                 }
                 case NodeType.Extension:
                 {
-                    visitor.VisitExtension(Keccak?.Bytes ?? FullRlp?.Bytes, context);
+                    visitor.VisitExtension(this, context);
                     TrieNode child = GetChild(0);
                     if (child != null && visitor.ShouldVisit(child.Keccak))
                     {
@@ -580,7 +584,7 @@ namespace Nethermind.Store
                 }
                 case NodeType.Leaf:
                 {
-                    visitor.VisitLeaf(Keccak?.Bytes ?? FullRlp?.Bytes, context);
+                    visitor.VisitLeaf(this, context);
                     if (!context.IsStorage)
                     {
                         Account account = _decoder.Decode(Value.AsRlpContext());

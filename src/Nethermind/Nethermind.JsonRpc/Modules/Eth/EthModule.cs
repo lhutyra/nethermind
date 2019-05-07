@@ -783,7 +783,7 @@ namespace Nethermind.JsonRpc.Modules.Eth
             ProofCollector proofCollector = new ProofCollector(accountAddress);
             _blockchainBridge.RunTreeVisitor(proofCollector);
 
-            return ResultWrapper<AccountProof>.Success(proofCollector.AccountProof);
+            return ResultWrapper<AccountProof>.Success(proofCollector.BuildResult());
         }
 
         private ResultWrapper<BigInteger?> GetOmmersCount(BlockParameter blockParameter)
